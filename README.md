@@ -26,4 +26,5 @@
 
 ```bash
 # Автоматический скрипт установки
-curl -sSL https://raw.githubusercontent.com/yourusername/rust-server-panel/main/scripts/auto-install.sh | sudo bash
+
+curl -sSL https://raw.githubusercontent.com/SpawnKill/rust-server-panel/main/scripts/auto-install.sh | sudo bash
