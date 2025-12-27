@@ -1,2 +1,29 @@
-# rust-server-panel
-rust-server-panel
+# Rust Server Web Panel
+
+Веб-панель для управления серверами Rust на Ubuntu Server.
+
+## Возможности
+
+✅ Автоматическая установка сервера Rust через SteamCMD  
+✅ Управление сервером (старт/стоп/рестарт)  
+✅ RCON консоль в реальном времени  
+✅ Редактор конфигурационных файлов  
+✅ Установка и управление плагинами Oxide  
+✅ Управление магазином сервера  
+✅ Система бэкапов  
+✅ Мониторинг ресурсов  
+✅ Мультисерверная поддержка  
+✅ Веб-терминал  
+
+## Требования
+
+- Ubuntu Server 20.04/22.04
+- Node.js 18+
+- 4GB+ RAM
+- 20GB+ свободного места
+
+## Быстрая установка
+
+```bash
+# Автоматический скрипт установки
+curl -sSL https://raw.githubusercontent.com/yourusername/rust-server-panel/main/scripts/auto-install.sh | sudo bash

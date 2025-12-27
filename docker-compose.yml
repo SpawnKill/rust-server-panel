@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  rust-panel:
+    build: .
+    container_name: rust-web-panel
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "3001:3001"  # WebSocket порт
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - /home/rustserver:/home/rustserver:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=sqlite:///app/data/panel.db
+      - JWT_SECRET=your-super-secret-jwt-key-change-this
+      - RUST_SERVER_PATH=/home/rustserver
+      - STEAMCMD_PATH=/home/steam/steamcmd
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - rust-network
+
+  # Опционально: MySQL для магазина
+  mysql:
+    image: mysql:8
+    container_name: rust-panel-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: changeme
+      MYSQL_DATABASE: rust_panel
+      MYSQL_USER: rust
+      MYSQL_PASSWORD: rust_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - rust-network
+
+  # Опционально: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: rust-panel-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - rust-panel
+    networks:
+      - rust-network
+
+volumes:
+  mysql-data:
+
+networks:
+  rust-network:
+    driver: bridge
