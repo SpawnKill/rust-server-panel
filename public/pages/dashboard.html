@@ -1,0 +1,83 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="stat-value" id="cpu-usage">0%</div>
+            <div class="stat-label">CPU</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="stat-value" id="memory-usage">0%</div>
+            <div class="stat-label">Память</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="stat-value" id="disk-usage">0%</div>
+            <div class="stat-label">Диск</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="stat-value" id="servers-count">0</div>
+            <div class="stat-label">Серверы</div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-server"></i> Активные серверы
+            </div>
+            <div class="card-body" id="active-servers">
+                <div class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm"></div>
+                    <span class="ms-2">Загрузка...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-activity"></i> Системные логи
+            </div>
+            <div class="card-body">
+                <div class="console-output" id="system-logs" style="height: 300px;">
+                    Загрузка логов...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-speedometer"></i> Быстрые действия
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-primary" data-action="install-server">
+                        <i class="bi bi-plus-circle"></i> Установить сервер
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="app.loadPage('console')">
+                        <i class="bi bi-terminal"></i> Открыть консоль
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="app.loadPage('plugins')">
+                        <i class="bi bi-plugin"></i> Управление плагинами
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="app.loadPage('shop')">
+                        <i class="bi bi-cart"></i> Магазин
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="app.loadPage('backups')">
+                        <i class="bi bi-archive"></i> Бэкапы
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,184 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-archive"></i> Управление бэкапами</span>
+        <div class="btn-group">
+            <button class="btn btn-primary btn-sm" id="create-backup-now">
+                <i class="bi bi-plus-circle"></i> Создать бэкап
+            </button>
+            <button class="btn btn-outline-primary btn-sm" id="backup-settings">
+                <i class="bi bi-gear"></i> Настройки
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-server"></i> Серверы
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="server-list">
+                            <!-- Будет заполнено через JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-info-circle"></i> Статистика
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <div class="stat-value" id="total-backups">0</div>
+                            <div class="stat-label">Всего бэкапов</div>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">Общий размер:</small>
+                            <div class="progress mt-1" style="height: 10px;">
+                                <div class="progress-bar bg-success" id="storage-usage" style="width: 0%"></div>
+                            </div>
+                            <small id="storage-text" class="text-muted">0 MB / 0 MB</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="backup-title">Выберите сервер</span>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary btn-sm" id="refresh-backups">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" id="delete-old-backups">
+                                <i class="bi bi-trash"></i> Удалить старые
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Имя</th>
+                                        <th>Сервер</th>
+                                        <th>Размер</th>
+                                        <th>Создан</th>
+                                        <th>Тип</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="backups-list">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5">
+                                            <i class="bi bi-archive display-4 text-muted"></i>
+                                            <p class="mt-3">Выберите сервер для просмотра бэкапов</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history"></i> Расписание бэкапов
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="auto-backup" checked>
+                                    <label class="form-check-label">
+                                        Автоматические бэкапы
+                                    </label>
+                                </div>
+                                <div class="mt-3">
+                                    <label class="form-label">Интервал:</label>
+                                    <select class="form-select" id="backup-interval">
+                                        <option value="3600">Каждый час</option>
+                                        <option value="10800">Каждые 3 часа</option>
+                                        <option value="21600">Каждые 6 часов</option>
+                                        <option value="43200">Каждые 12 часов</option>
+                                        <option value="86400">Ежедневно</option>
+                                        <option value="604800">Еженедельно</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Хранить бэкапы (дней):</label>
+                                    <input type="number" class="form-control" id="keep-days" value="7" min="1" max="365">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Макс. размер хранилища (GB):</label>
+                                    <input type="number" class="form-control" id="max-storage" value="50" min="1" max="1000">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="save-schedule">
+                            <i class="bi bi-save"></i> Сохранить настройки
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно создания бэкапа -->
+<div class="modal fade" id="backupModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Создание бэкапа</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Имя бэкапа:</label>
+                    <input type="text" class="form-control" id="backup-name" 
+                           placeholder="Например: backup-2024-01-01">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Комментарий:</label>
+                    <textarea class="form-control" id="backup-description" rows="3" 
+                              placeholder="Описание бэкапа..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="include-logs" checked>
+                        <label class="form-check-label">
+                            Включить логи
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="compress-backup" checked>
+                        <label class="form-check-label">
+                            Сжимать архив
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="stop-server">
+                        <label class="form-check-label">
+                            Остановить сервер перед бэкапом
+                        </label>
+                        <div class="form-text text-warning">
+                            Сервер будет остановлен на время создания бэкапа
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <small><i class="bi bi-info-circle"></i> Размер бэкапа: <span id="estimated-size">~0 MB</span></small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="start-backup">Создать</button>
+            </div>
+        </div>
+    </div>
+</div>

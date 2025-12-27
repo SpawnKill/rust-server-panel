@@ -1,0 +1,369 @@
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-gear"></i> Настройки системы
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs" id="settings-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#general">
+                    <i class="bi bi-sliders"></i> Общие
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#security">
+                    <i class="bi bi-shield-lock"></i> Безопасность
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#steam">
+                    <i class="bi bi-steam"></i> Steam
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#notifications">
+                    <i class="bi bi-bell"></i> Уведомления
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#backup">
+                    <i class="bi bi-archive"></i> Бэкапы
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#api">
+                    <i class="bi bi-code-slash"></i> API
+                </a>
+            </li>
+        </ul>
+        
+        <div class="tab-content mt-3">
+            <!-- Вкладка Общие -->
+            <div class="tab-pane fade show active" id="general">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Основные настройки</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Название панели:</label>
+                                    <input type="text" class="form-control" id="panel-name" value="Rust Server Panel">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Язык:</label>
+                                    <select class="form-select" id="panel-language">
+                                        <option value="ru">Русский</option>
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
+                                        <option value="de">Deutsch</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Тема:</label>
+                                    <select class="form-select" id="panel-theme">
+                                        <option value="dark">Тёмная</option>
+                                        <option value="light">Светлая</option>
+                                        <option value="auto">Авто</option>
+                                    </select>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="auto-update" checked>
+                                    <label class="form-check-label">
+                                        Автоматическое обновление
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Пути</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Директория серверов:</label>
+                                    <input type="text" class="form-control" id="servers-path" 
+                                           value="/home/rustserver" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Директория SteamCMD:</label>
+                                    <input type="text" class="form-control" id="steamcmd-path" 
+                                           value="/home/steam/steamcmd" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Директория логов:</label>
+                                    <input type="text" class="form-control" id="logs-path" 
+                                           value="/var/log/rust-panel" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Директория бэкапов:</label>
+                                    <input type="text" class="form-control" id="backup-path" 
+                                           value="/backup/rust-panel" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка Безопасность -->
+            <div class="tab-pane fade" id="security">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Аутентификация</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Двухфакторная аутентификация:</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="2fa-enabled">
+                                        <label class="form-check-label">
+                                            Включить 2FA
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Длительность сессии:</label>
+                                    <select class="form-select" id="session-duration">
+                                        <option value="3600">1 час</option>
+                                        <option value="86400">1 день</option>
+                                        <option value="604800" selected>7 дней</option>
+                                        <option value="2592000">30 дней</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Макс. попыток входа:</label>
+                                    <input type="number" class="form-control" id="max-login-attempts" value="5" min="1" max="20">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Блокировка при ошибках (минут):</label>
+                                    <input type="number" class="form-control" id="lockout-duration" value="15" min="1" max="1440">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Доступ</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Разрешить регистрацию:</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="allow-registration">
+                                        <label class="form-check-label">
+                                            Разрешить новым пользователям регистрироваться
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Требуемая роль для установки серверов:</label>
+                                    <select class="form-select" id="install-permission">
+                                        <option value="user">Пользователь</option>
+                                        <option value="moderator">Модератор</option>
+                                        <option value="admin" selected>Администратор</option>
+                                        <option value="superadmin">Супер-администратор</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Разрешенные IP адреса:</label>
+                                    <textarea class="form-control" id="allowed-ips" rows="3" 
+                                              placeholder="Оставьте пустым для разрешения всех IP
+Пример:
+192.168.1.0/24
+10.0.0.1"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Запрещенные IP адреса:</label>
+                                    <textarea class="form-control" id="blocked-ips" rows="3" 
+                                              placeholder="Введите IP для блокировки
+Каждый IP с новой строки"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка Steam -->
+            <div class="tab-pane fade" id="steam">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Steam API</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Steam API Key:</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="steam-api-key" 
+                                               placeholder="Введите ваш Steam Web API ключ">
+                                        <button class="btn btn-outline-secondary" type="button" id="toggle-api-key">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text">
+                                        Получите ключ на <a href="https://steamcommunity.com/dev/apikey" target="_blank">Steam Web API</a>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Steam Username:</label>
+                                    <input type="text" class="form-control" id="steam-username" 
+                                           placeholder="Имя пользователя Steam">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Steam Password:</label>
+                                    <input type="password" class="form-control" id="steam-password" 
+                                           placeholder="Пароль Steam">
+                                </div>
+                                <div class="alert alert-info">
+                                    <small>
+                                        <i class="bi bi-info-circle"></i> Учетные данные Steam используются для установки и обновления серверов
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">SteamCMD</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Автообновление SteamCMD:</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="steamcmd-auto-update" checked>
+                                        <label class="form-check-label">
+                                            Автоматически обновлять SteamCMD
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Таймаут загрузки (секунд):</label>
+                                    <input type="number" class="form-control" id="steamcmd-timeout" value="300" min="30" max="3600">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Макс. повторных попыток:</label>
+                                    <input type="number" class="form-control" id="steamcmd-retries" value="3" min="0" max="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Дополнительные параметры:</label>
+                                    <textarea class="form-control" id="steamcmd-params" rows="3" 
+                                              placeholder="Дополнительные параметры для SteamCMD
+Например:
++login anonymous
++app_update 258550 validate"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Остальные вкладки (уведомления, бэкапы, API) -->
+            <div class="tab-pane fade" id="notifications">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Email уведомления</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">SMTP сервер:</label>
+                                    <input type="text" class="form-control" id="smtp-server" 
+                                           placeholder="smtp.gmail.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Порт:</label>
+                                    <input type="number" class="form-control" id="smtp-port" value="587">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email:</label>
+                                    <input type="email" class="form-control" id="smtp-email" 
+                                           placeholder="your-email@gmail.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Пароль:</label>
+                                    <input type="password" class="form-control" id="smtp-password">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Telegram уведомления</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Telegram Bot Token:</label>
+                                    <input type="text" class="form-control" id="telegram-token" 
+                                           placeholder="1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Chat ID:</label>
+                                    <input type="text" class="form-control" id="telegram-chat-id" 
+                                           placeholder="-1001234567890">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="backup">
+                <!-- Настройки бэкапов (можно скопировать из backups.html) -->
+            </div>
+            
+            <div class="tab-pane fade" id="api">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">REST API</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">API ключ:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="api-key" readonly>
+                                        <button class="btn btn-outline-secondary" type="button" id="generate-api-key">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Лимит запросов в минуту:</label>
+                                    <input type="number" class="form-control" id="api-rate-limit" value="60" min="1" max="1000">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Разрешить CORS:</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="api-cors">
+                                        <label class="form-check-label">
+                                            Разрешить кросс-доменные запросы
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">WebSocket</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Порт WebSocket:</label>
+                                    <input type="number" class="form-control" id="ws-port" value="3001" min="1024" max="65535">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Таймаут соединения (секунд):</label>
+                                    <input type="number" class="form-control" id="ws-timeout" value="30" min="5" max="300">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <button class="btn btn-primary" id="save-settings">
+                <i class="bi bi-save"></i> Сохранить все настройки
+            </button>
+            <button class="btn btn-outline-secondary ms-2" id="reset-settings">
+                <i class="bi bi-arrow-clockwise"></i> Сбросить
+            </button>
+        </div>
+    </div>
+</div>

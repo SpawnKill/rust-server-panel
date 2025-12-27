@@ -1,0 +1,306 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-cart"></i> Магазин сервера</span>
+        <div class="btn-group">
+            <button class="btn btn-primary btn-sm" id="add-item">
+                <i class="bi bi-plus-circle"></i> Добавить товар
+            </button>
+            <button class="btn btn-outline-primary btn-sm" id="export-shop">
+                <i class="bi bi-download"></i> Экспорт
+            </button>
+            <button class="btn btn-outline-primary btn-sm" id="shop-stats">
+                <i class="bi bi-graph-up"></i> Статистика
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-filter"></i> Фильтры
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Категория:</label>
+                            <select class="form-select" id="category-filter">
+                                <option value="">Все категории</option>
+                                <option value="weapons">Оружие</option>
+                                <option value="resources">Ресурсы</option>
+                                <option value="building">Строительство</option>
+                                <option value="transport">Транспорт</option>
+                                <option value="clothing">Одежда</option>
+                                <option value="tools">Инструменты</option>
+                                <option value="medical">Медицина</option>
+                                <option value="food">Еда</option>
+                                <option value="skins">Скины</option>
+                                <option value="privileges">Привилегии</option>
+                                <option value="kits">Наборы</option>
+                                <option value="other">Разное</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Статус:</label>
+                            <select class="form-select" id="status-filter">
+                                <option value="">Все</option>
+                                <option value="active">Активные</option>
+                                <option value="inactive">Неактивные</option>
+                                <option value="out_of_stock">Нет в наличии</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Цена:</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" id="price-min" placeholder="Мин">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control" id="price-max" placeholder="Макс">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" id="apply-filters">
+                            <i class="bi bi-funnel"></i> Применить
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-tags"></i> Категории
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action bg-transparent border-secondary category-item" data-category="all">
+                                <div class="d-flex justify-content-between">
+                                    <span>Все товары</span>
+                                    <span class="badge bg-secondary" id="count-all">0</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action bg-transparent border-secondary category-item" data-category="weapons">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="bi bi-bullseye"></i> Оружие</span>
+                                    <span class="badge bg-secondary" id="count-weapons">0</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action bg-transparent border-secondary category-item" data-category="resources">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="bi bi-diamond"></i> Ресурсы</span>
+                                    <span class="badge bg-secondary" id="count-resources">0</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action bg-transparent border-secondary category-item" data-category="building">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="bi bi-house"></i> Строительство</span>
+                                    <span class="badge bg-secondary" id="count-building">0</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action bg-transparent border-secondary category-item" data-category="privileges">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="bi bi-star"></i> Привилегии</span>
+                                    <span class="badge bg-secondary" id="count-privileges">0</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action bg-transparent border-secondary category-item" data-category="kits">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="bi bi-box"></i> Наборы</span>
+                                    <span class="badge bg-secondary" id="count-kits">0</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="shop-title">Все товары</span>
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control" id="shop-search" placeholder="Поиск товаров...">
+                            <button class="btn btn-outline-secondary" id="clear-search">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="shop-items">
+                            <div class="col-12 text-center py-5">
+                                <div class="spinner-border spinner-border-sm"></div>
+                                <p class="mt-3">Загрузка товаров...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-wrench"></i> Интеграция с плагинами
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-secondary">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-cash-coin display-4"></i>
+                                        <h5 class="mt-3">Economics</h5>
+                                        <p class="text-muted">Экономическая система</p>
+                                        <button class="btn btn-outline-primary btn-sm w-100" data-export="Economics">
+                                            Экспортировать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-secondary">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-shop display-4"></i>
+                                        <h5 class="mt-3">Shop UI</h5>
+                                        <p class="text-muted">Интерфейс магазина</p>
+                                        <button class="btn btn-outline-primary btn-sm w-100" data-export="ShopUI">
+                                            Экспортировать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-secondary">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-gem display-4"></i>
+                                        <h5 class="mt-3">IQ Economic</h5>
+                                        <p class="text-muted">Продвинутая экономика</p>
+                                        <button class="btn btn-outline-primary btn-sm w-100" data-export="IQEconomic">
+                                            Экспортировать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно добавления/редактирования товара -->
+<div class="modal fade" id="itemModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="item-modal-title">Добавить товар</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="item-form">
+                    <input type="hidden" id="item-id">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Название товара *</label>
+                                <input type="text" class="form-control" id="item-name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Категория *</label>
+                                <select class="form-select" id="item-category" required>
+                                    <option value="">Выберите категорию</option>
+                                    <option value="weapons">Оружие</option>
+                                    <option value="resources">Ресурсы</option>
+                                    <option value="building">Строительство</option>
+                                    <option value="transport">Транспорт</option>
+                                    <option value="clothing">Одежда</option>
+                                    <option value="tools">Инструменты</option>
+                                    <option value="medical">Медицина</option>
+                                    <option value="food">Еда</option>
+                                    <option value="skins">Скины</option>
+                                    <option value="privileges">Привилегии</option>
+                                    <option value="kits">Наборы</option>
+                                    <option value="other">Разное</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Shortname предмета *</label>
+                                <input type="text" class="form-control" id="item-shortname" 
+                                       placeholder="Например: assault.rifle" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Количество</label>
+                                <input type="number" class="form-control" id="item-amount" value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">ID скина</label>
+                                <input type="number" class="form-control" id="item-skin" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Цена *</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="item-price" step="0.01" min="0" required>
+                                    <select class="form-select" id="item-currency" style="width: 100px;">
+                                        <option value="RUB">₽</option>
+                                        <option value="USD">$</option>
+                                        <option value="EUR">€</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Запас (0 = бесконечно)</label>
+                                <input type="number" class="form-control" id="item-stock" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea class="form-control" id="item-description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Изображение (URL)</label>
+                        <input type="text" class="form-control" id="item-image" 
+                               placeholder="https://example.com/image.png">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Команды при покупке (по одной на строку)</label>
+                        <textarea class="form-control" id="item-commands" rows="3" 
+                                  placeholder="inventory.giveto {player} {item} {amount}
+say {player} купил {item}!"></textarea>
+                        <div class="form-text">
+                            Доступные переменные: {player} - SteamID игрока, {item} - shortname, {amount} - количество
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="item-active" checked>
+                        <label class="form-check-label">
+                            Товар активен
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="save-item">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+{
+  "app": {
+    "name": "Rust Server Panel",
+    "version": "1.0.0",
+    "port": 3000,
+    "wsPort": 3001,
+    "host": "0.0.0.0",
+    "environment": "production",
+    "logLevel": "warn",
+    "maxFileSize": 104857600,
+    "sessionSecret": "CHANGE_THIS_TO_RANDOM_STRING_IN_PRODUCTION",
+    "jwtSecret": "CHANGE_THIS_TO_RANDOM_STRING_IN_PRODUCTION",
+    "jwtExpiresIn": "7d"
+  },
+  "database": {
+    "dialect": "sqlite",
+    "storage": "./data/panel.db",
+    "logging": false,
+    "sync": false
+  },
+  "paths": {
+    "servers": "/home/rustserver",
+    "steamcmd": "/home/steam/steamcmd",
+    "logs": "/var/log/rust-panel",
+    "backups": "/backup/rust-panel",
+    "temp": "/tmp/rust-panel"
+  },
+  "security": {
+    "rateLimit": {
+      "windowMs": 900000,
+      "max": 100
+    },
+    "cors": {
+      "origin": ["https://your-domain.com"],
+      "credentials": true
+    },
+    "helmet": {
+      "contentSecurityPolicy": true
+    },
+    "sessionDuration": 604800,
+    "maxLoginAttempts": 5,
+    "lockoutDuration": 900,
+    "allowRegistration": false,
+    "installPermission": "admin"
+  },
+  "steam": {
+    "apiKey": "",
+    "username": "anonymous",
+    "password": "",
+    "timeout": 300,
+    "retries": 3,
+    "autoUpdate": true
+  },
+  "backup": {
+    "enabled": true,
+    "autoBackup": true,
+    "interval": 86400,
+    "keepDays": 7,
+    "maxStorage": 50,
+    "includeLogs": true,
+    "compress": true
+  },
+  "notifications": {
+    "email": {
+      "enabled": false,
+      "smtpServer": "",
+      "smtpPort": 587,
+      "email": "",
+      "password": ""
+    },
+    "telegram": {
+      "enabled": false,
+      "botToken": "",
+      "chatId": ""
+    }
+  },
+  "api": {
+    "enabled": true,
+    "rateLimit": 60,
+    "cors": false,
+    "keyLength": 32
+  },
+  "oxide": {
+    "autoInstall": true,
+    "checkUpdates": true,
+    "updateInterval": 86400
+  },
+  "shop": {
+    "enabled": true,
+    "currency": "RUB",
+    "defaultCategory": "other"
+  }
+}

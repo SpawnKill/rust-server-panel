@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Server Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #2a2a2a;
+            --dark-color: #1a1a1a;
+            --light-color: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        
+        .sidebar .nav-link {
+            color: #ddd;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 107, 53, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .main-content {
+            padding: 20px;
+        }
+        
+        .card {
+            background-color: var(--secondary-color);
+            border: 1px solid #444;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid #444;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e55a2b;
+            border-color: #e55a2b;
+        }
+        
+        .console-output {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #000;
+            color: #0f0;
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .console-input {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #444;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-online {
+            background-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+        
+        .status-offline {
+            background-color: var(--danger-color);
+        }
+        
+        .server-card {
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .server-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+        
+        .plugin-badge {
+            font-size: 0.7em;
+            margin: 2px;
+        }
+        
+        .file-explorer {
+            background-color: #222;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .file-item:hover {
+            background-color: #333;
+        }
+        
+        .file-icon {
+            margin-right: 8px;
+        }
+        
+        .shop-item {
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .shop-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.2);
+        }
+        
+        .shop-item-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tab-content {
+            padding: 20px 0;
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid #444;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #ddd;
+            border: 1px solid transparent;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background-color: var(--secondary-color);
+            border-color: #444 #444 var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+                padding: 10px;
+            }
+            
+            .sidebar .nav {
+                flex-direction: row;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .sidebar .nav-link {
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Сайдбар -->
+            <div class="col-md-3 col-lg-2 sidebar d-md-block collapse" id="sidebar">
+                <div class="position-sticky">
+                    <div class="text-center mb-4">
+                        <h4 class="text-primary">
+                            <i class="bi bi-hdd-network"></i> Rust Panel
+                        </h4>
+                        <small class="text-muted">v1.0.0</small>
+                    </div>
+                    
+                    <ul class="nav flex-column" id="main-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-page="dashboard">
+                                <i class="bi bi-speedometer2"></i> Дашборд
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="servers">
+                                <i class="bi bi-server"></i> Серверы
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="console">
+                                <i class="bi bi-terminal"></i> Консоль
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="configs">
+                                <i class="bi bi-file-earmark-code"></i> Конфиги
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="plugins">
+                                <i class="bi bi-plugin"></i> Плагины
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="shop">
+                                <i class="bi bi-cart"></i> Магазин
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="backups">
+                                <i class="bi bi-archive"></i> Бэкапы
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="settings">
+                                <i class="bi bi-gear"></i> Настройки
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="text-muted">
+                    
+                    <div class="mt-3">
+                        <div class="card bg-dark">
+                            <div class="card-body p-2">
+                                <small class="text-muted">Статус системы:</small>
+                                <div class="d-flex align-items-center mt-1">
+                                    <span class="status-indicator status-online"></span>
+                                    <small>Онлайн</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm w-100 dropdown-toggle" 
+                                    type="button" id="userMenu" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> Admin
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="userMenu">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Профиль</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-key"></i> Сменить пароль</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" id="logout-btn">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Основной контент -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto main-content">
+                <!-- Навигация для мобильных -->
+                <nav class="navbar navbar-dark bg-secondary d-md-none mb-3">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#sidebar" aria-controls="sidebar">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <span class="navbar-brand">Rust Panel</span>
+                    </div>
+                </nav>
+                
+                <!-- Заголовок страницы -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 id="page-title">Дашборд</h3>
+                    <div id="page-actions"></div>
+                </div>
+                
+                <!-- Контент страницы -->
+                <div id="page-content">
+                    <div class="text-center py-5">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3">Загрузка...</p>
+                    </div>
+                </div>
+                
+                <!-- Футер -->
+                <footer class="mt-5 pt-3 border-top text-muted">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small>Rust Server Web Panel &copy; 2024</small>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <small>
+                                <span id="system-status"></span>
+                                | Версия: 1.0.0
+                            </small>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальные окна -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Авторизация</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="login-form">
+                        <div class="mb-3">
+                            <label class="form-label">Имя пользователя</label>
+                            <input type="text" class="form-control" id="login-username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="login-password" required>
+                        </div>
+                        <div class="alert alert-danger d-none" id="login-error"></div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-box-arrow-in-right"></i> Войти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.5.0/dist/socket.io.min.js"></script>
+    <script>
+        // Базовый JavaScript для панели
+        class RustPanel {
+            constructor() {
+                this.currentPage = 'dashboard';
+                this.socket = null;
+                this.token = localStorage.getItem('auth_token');
+                this.currentServer = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.checkAuth();
+                this.setupEventListeners();
+                this.loadPage('dashboard');
+                this.connectWebSocket();
+                this.updateSystemStatus();
+            }
+            
+            checkAuth() {
+                if (!this.token) {
+                    this.showLoginModal();
+                } else {
+                    this.verifyToken();
+                }
+            }
+            
+            showLoginModal() {
+                const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+                modal.show();
+                
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.login();
+                });
+            }
+            
+            async login() {
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+                
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.token = data.token;
+                        localStorage.setItem('auth_token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        
+                        document.getElementById('loginModal').querySelector('.btn-close').click();
+                        this.init();
+                    } else {
+                        this.showError('login-error', data.error);
+                    }
+                } catch (error) {
+                    this.showError('login-error', 'Ошибка соединения');
+                }
+            }
+            
+            async verifyToken() {
+                try {
+                    const response = await fetch('/api/auth/verify', {
+                        headers: { 'Authorization': `Bearer ${this.token}` }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Token invalid');
+                    }
+                } catch (error) {
+                    localStorage.removeItem('auth_token');
+                    this.showLoginModal();
+                }
+            }
+            
+            setupEventListeners() {
+                // Навигация
+                document.querySelectorAll('#main-nav .nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = link.dataset.page;
+                        this.loadPage(page);
+                        
+                        // Обновляем активный элемент
+                        document.querySelectorAll('#main-nav .nav-link').forEach(l => {
+                            l.classList.remove('active');
+                        });
+                        link.classList.add('active');
+                    });
+                });
+                
+                // Выход
+                document.getElementById('logout-btn').addEventListener('click', () => {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                });
+            }
+            
+            async loadPage(page) {
+                this.currentPage = page;
+                document.getElementById('page-title').textContent = this.getPageTitle(page);
+                
+                // Показываем загрузку
+                document.getElementById('page-content').innerHTML = `
+                    <div class="text-center py-5">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3">Загрузка...</p>
+                    </div>
+                `;
+                
+                // Загружаем содержимое страницы
+                try {
+                    const content = await this.fetchPageContent(page);
+                    document.getElementById('page-content').innerHTML = content;
+                    
+                    // Инициализируем страницу
+                    this.initPage(page);
+                } catch (error) {
+                    document.getElementById('page-content').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Ошибка загрузки страницы: ${error.message}
+                        </div>
+                    `;
+                }
+            }
+            
+            async fetchPageContent(page) {
+                // Здесь будет загрузка содержимого страниц
+                // Для примера - базовые шаблоны
+                
+                const pages = {
+                    dashboard: `
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="stat-value" id="cpu-usage">0%</div>
+                                    <div class="stat-label">CPU</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="stat-value" id="memory-usage">0%</div>
+                                    <div class="stat-label">Память</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="stat-value" id="disk-usage">0%</div>
+                                    <div class="stat-label">Диск</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="stat-value" id="servers-count">0</div>
+                                    <div class="stat-label">Серверы</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="bi bi-server"></i> Активные серверы
+                                    </div>
+                                    <div class="card-body" id="active-servers">
+                                        <div class="text-center py-3">
+                                            <div class="spinner-border spinner-border-sm"></div>
+                                            <span class="ms-2">Загрузка...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="bi bi-activity"></i> Системные логи
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="console-output" id="system-logs">
+                                            Загрузка логов...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    
+                    servers: `
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-server"></i> Управление серверами</span>
+                                <button class="btn btn-primary btn-sm" onclick="panel.installServer()">
+                                    <i class="bi bi-plus-circle"></i> Установить сервер
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Имя</th>
+                                                <th>Статус</th>
+                                                <th>Игроки</th>
+                                                <th>Uptime</th>
+                                                <th>Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="servers-list">
+                                            <tr>
+                                                <td colspan="5" class="text-center py-4">
+                                                    <div class="spinner-border spinner-border-sm"></div>
+                                                    <span class="ms-2">Загрузка серверов...</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    
+                    console: `
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-terminal"></i> RCON Консоль
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Выберите сервер:</label>
+                                    <select class="form-select" id="console-server-select">
+                                        <option value="">Загрузка...</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="console-output" id="console-output">
+                                    Выберите сервер для подключения к консоли
+                                </div>
+                                
+                                <div class="input-group mt-3">
+                                    <input type="text" class="form-control console-input" 
+                                           id="console-input" placeholder="Введите команду..." disabled>
+                                    <button class="btn btn-primary" id="console-send" disabled>
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <button class="btn btn-outline-secondary btn-sm me-2" id="clear-console">
+                                        <i class="bi bi-trash"></i> Очистить
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" id="console-help">
+                                        <i class="bi bi-question-circle"></i> Справка
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                };
+                
+                return pages[page] || '<div class="alert alert-info">Страница в разработке</div>';
+            }
+            
+            initPage(page) {
+                switch(page) {
+                    case 'dashboard':
+                        this.initDashboard();
+                        break;
+                    case 'servers':
+                        this.initServers();
+                        break;
+                    case 'console':
+                        this.initConsole();
+                        break;
+                }
+            }
+            
+            getPageTitle(page) {
+                const titles = {
+                    dashboard: 'Дашборд',
+                    servers: 'Серверы',
+                    console: 'Консоль',
+                    configs: 'Конфигурационные файлы',
+                    plugins: 'Плагины',
+                    shop: 'Магазин сервера',
+                    backups: 'Бэкапы',
+                    settings: 'Настройки'
+                };
+                
+                return titles[page] || 'Панель управления';
+            }
+            
+            connectWebSocket() {
+                if (!this.token) return;
+                
+                this.socket = io({
+                    auth: { token: this.token },
+                    transports: ['websocket', 'polling']
+                });
+                
+                this.socket.on('connect', () => {
+                    console.log('WebSocket connected');
+                    document.getElementById('system-status').textContent = 'Подключено';
+                });
+                
+                this.socket.on('disconnect', () => {
+                    console.log('WebSocket disconnected');
+                    document.getElementById('system-status').textContent = 'Отключено';
+                });
+                
+                this.socket.on('error', (error) => {
+                    console.error('WebSocket error:', error);
+                });
+                
+                this.socket.on('server_stats', (stats) => {
+                    this.updateSystemStats(stats);
+                });
+            }
+            
+            updateSystemStatus() {
+                // Обновляем статус системы каждые 30 секунд
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/server/list', {
+                            headers: { 'Authorization': `Bearer ${this.token}` }
+                        });
+                        
+                        if (response.ok) {
+                            document.getElementById('system-status').textContent = 'Онлайн';
+                        }
+                    } catch (error) {
+                        document.getElementById('system-status').textContent = 'Ошибка';
+                    }
+                }, 30000);
+            }
+            
+            updateSystemStats(stats) {
+                document.getElementById('cpu-usage').textContent = `${stats.cpu.toFixed(1)}%`;
+                document.getElementById('memory-usage').textContent = `${stats.memory.toFixed(1)}%`;
+                document.getElementById('disk-usage').textContent = `${stats.disk.toFixed(1)}%`;
+            }
+            
+            showError(elementId, message) {
+                const element = document.getElementById(elementId);
+                element.textContent = message;
+                element.classList.remove('d-none');
+                
+                setTimeout(() => {
+                    element.classList.add('d-none');
+                }, 5000);
+            }
+            
+            // Методы для конкретных страниц
+            async initDashboard() {
+                // Загружаем список серверов
+                this.loadServersList('active-servers');
+                
+                // Подписываемся на статистику
+                if (this.socket && this.socket.connected) {
+                    this.socket.emit('subscribe_stats', {
+                        interval: 5000
+                    });
+                }
+            }
+            
+            async initServers() {
+                this.loadServersTable();
+            }
+            
+            async initConsole() {
+                await this.loadServerSelect('console-server-select');
+                
+                // Обработчики консоли
+                document.getElementById('console-server-select').addEventListener('change', (e) => {
+                    this.connectToConsole(e.target.value);
+                });
+                
+                document.getElementById('console-send').addEventListener('click', () => {
+                    this.sendConsoleCommand();
+                });
+                
+                document.getElementById('console-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendConsoleCommand();
+                    }
+                });
+                
+                document.getElementById('clear-console').addEventListener('click', () => {
+                    document.getElementById('console-output').innerHTML = '';
+                });
+                
+                document.getElementById('console-help').addEventListener('click', () => {
+                    this.showConsoleHelp();
+                });
+            }
+            
+            async loadServersList(elementId) {
+                try {
+                    const response = await fetch('/api/server/list', {
+                        headers: { 'Authorization': `Bearer ${this.token}` }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.servers.length > 0) {
+                        let html = '';
+                        data.servers.forEach(server => {
+                            const statusClass = server.status === 'running' ? 'status-online' : 'status-offline';
+                            
+                            html += `
+                                <div class="server-card card mb-2">
+                                    <div class="card-body py-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="status-indicator ${statusClass}"></span>
+                                                <strong>${server.name}</strong>
+                                                <small class="text-muted ms-2">${server.id}</small>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        onclick="panel.controlServer('${server.id}', 'restart')">
+                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        document.getElementById(elementId).innerHTML = html;
+                    } else {
+                        document.getElementById(elementId).innerHTML = `
+                            <div class="text-center py-3 text-muted">
+                                <i class="bi bi-server display-6"></i>
+                                <p class="mt-2">Серверы не найдены</p>
+                                <button class="btn btn-sm btn-primary" onclick="panel.installServer()">
+                                    Установить первый сервер
+                                </button>
+                            </div>
+                        `;
+                    }
+                    
+                    // Обновляем счетчик серверов
+                    const count = data.success ? data.servers.length : 0;
+                    document.getElementById('servers-count').textContent = count;
+                    
+                } catch (error) {
+                    document.getElementById(elementId).innerHTML = `
+                        <div class="alert alert-danger">
+                            Ошибка загрузки серверов: ${error.message}
+                        </div>
+                    `;
+                }
+            }
+            
+            async loadServersTable() {
+                try {
+                    const response = await fetch('/api/server/list', {
+                        headers: { 'Authorization': `Bearer ${this.token}` }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        let html = '';
+                        
+                        if (data.servers.length > 0) {
+                            data.servers.forEach(server => {
+                                const statusClass = server.status === 'running' ? 'status-online' : 'status-offline';
+                                const statusText = server.status === 'running' ? 'Онлайн' : 'Оффлайн';
+                                
+                                html += `
+                                    <tr>
+                                        <td>
+                                            <strong>${server.name}</strong><br>
+                                            <small class="text-muted">${server.id}</small>
+                                        </td>
+                                        <td>
+                                            <span class="status-indicator ${statusClass}"></span>
+                                            ${statusText}
+                                        </td>
+                                        <td>0/50</td>
+                                        <td>--:--</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" 
+                                                        onclick="panel.controlServer('${server.id}', 'start')"
+                                                        ${server.status === 'running' ? 'disabled' : ''}>
+                                                    <i class="bi bi-play"></i>
+                                                </button>
+                                                <button class="btn btn-outline-warning" 
+                                                        onclick="panel.controlServer('${server.id}', 'restart')"
+                                                        ${server.status !== 'running' ? 'disabled' : ''}>
+                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" 
+                                                        onclick="panel.controlServer('${server.id}', 'stop')"
+                                                        ${server.status !== 'running' ? 'disabled' : ''}>
+                                                    <i class="bi bi-stop"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            html = `
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <i class="bi bi-server display-6 text-muted"></i>
+                                        <p class="mt-3">Серверы не найдены</p>
+                                        <button class="btn btn-primary" onclick="panel.installServer()">
+                                            <i class="bi bi-plus-circle"></i> Установить сервер
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                        
+                        document.getElementById('servers-list').innerHTML = html;
+                    }
+                } catch (error) {
+                    document.getElementById('servers-list').innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="alert alert-danger">
+                                    Ошибка загрузки: ${error.message}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+            
+            async loadServerSelect(selectId) {
+                try {
+                    const response = await fetch('/api/server/list', {
+                        headers: { 'Authorization': `Bearer ${this.token}` }
+                    });
+                    
+                    const data = await response.json();
+                    const select = document.getElementById(selectId);
+                    
+                    select.innerHTML = '<option value="">Выберите сервер...</option>';
+                    
+                    if (data.success && data.servers.length > 0) {
+                        data.servers.forEach(server => {
+                            if (server.status === 'running') {
+                                const option = document.createElement('option');
+                                option.value = server.id;
+                                option.textContent = `${server.name} (${server.id})`;
+                                select.appendChild(option);
+                            }
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'Нет доступных серверов';
+                        select.appendChild(option);
+                    }
+                } catch (error) {
+                    console.error('Error loading servers:', error);
+                }
+            }
+            
+            async connectToConsole(serverId) {
+                if (!serverId) return;
+                
+                const output = document.getElementById('console-output');
+                const input = document.getElementById('console-input');
+                const sendBtn = document.getElementById('console-send');
+                
+                output.innerHTML = '<span class="text-info">Подключение к консоли...</span>';
+                input.disabled = true;
+                sendBtn.disabled = true;
+                
+                this.currentServer = serverId;
+                
+                if (this.socket && this.socket.connected) {
+                    this.socket.emit('connect_console', { serverId });
+                    
+                    // Слушаем вывод консоли
+                    this.socket.on('console_output', (data) => {
+                        const typeClass = {
+                            command: 'text-primary',
+                            response: 'text-light',
+                            error: 'text-danger',
+                            log: 'text-success',
+                            system: 'text-info'
+                        }[data.type] || 'text-light';
+                        
+                        const line = `<span class="${typeClass}">${this.escapeHtml(data.data)}</span><br>`;
+                        output.innerHTML += line;
+                        output.scrollTop = output.scrollHeight;
+                    });
+                    
+                    input.disabled = false;
+                    sendBtn.disabled = false;
+                    input.focus();
+                    
+                    output.innerHTML += '<span class="text-success">Консоль подключена</span><br>';
+                } else {
+                    output.innerHTML += '<span class="text-danger">WebSocket не подключен</span><br>';
+                }
+            }
+            
+            sendConsoleCommand() {
+                const input = document.getElementById('console-input');
+                const command = input.value.trim();
+                
+                if (!command || !this.socket || !this.currentServer) return;
+                
+                if (this.socket.connected) {
+                    this.socket.emit('console_command', { command });
+                    input.value = '';
+                }
+            }
+            
+            showConsoleHelp() {
+                const output = document.getElementById('console-output');
+                output.innerHTML += `
+                    <span class="text-info">Доступные команды:</span><br>
+                    <span class="text-light">• status - статус сервера</span><br>
+                    <span class="text-light">• players - список игроков</span><br>
+                    <span class="text-light">• say [сообщение] - отправить в чат</span><br>
+                    <span class="text-light">• kick [steamid] - кикнуть игрока</span><br>
+                    <span class="text-light">• ban [steamid] - забанить игрока</span><br>
+                    <span class="text-light">• oxide.list - список плагинов</span><br>
+                    <span class="text-light">• server.save - сохранить мир</span><br>
+                    <span class="text-light">• quit - остановить сервер</span><br>
+                `;
+            }
+            
+            async installServer() {
+                const name = prompt('Введите имя сервера:', 'Мой Rust сервер');
+                if (!name) return;
+                
+                const worldSize = prompt('Размер мира (3000-8000):', '3000');
+                const maxPlayers = prompt('Максимальное количество игроков:', '50');
+                
+                try {
+                    const response = await fetch('/api/server/install', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            serverName: name,
+                            worldSize: parseInt(worldSize),
+                            maxPlayers: parseInt(maxPlayers)
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert(`Сервер установлен! ID: ${data.server.id}`);
+                        this.loadServersTable();
+                    } else {
+                        alert(`Ошибка: ${data.error}`);
+                    }
+                } catch (error) {
+                    alert(`Ошибка установки: ${error.message}`);
+                }
+            }
+            
+            async controlServer(serverId, action) {
+                if (!confirm(`Вы уверены, что хотите ${action} сервер?`)) return;
+                
+                try {
+                    const response = await fetch(`/api/server/${serverId}/control`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ action })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert(`Сервер ${action} успешно`);
+                        this.loadServersTable();
+                    } else {
+                        alert(`Ошибка: ${data.error}`);
+                    }
+                } catch (error) {
+                    alert(`Ошибка: ${error.message}`);
+                }
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+        
+        // Инициализация панели
+        let panel;
+        document.addEventListener('DOMContentLoaded', () => {
+            panel = new RustPanel();
+        });
+        
+        // Глобальный доступ для обработчиков событий
+        window.panel = panel;
+    </script>
+</body>
+</html>

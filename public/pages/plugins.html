@@ -1,0 +1,189 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-plugin"></i> Управление плагинами Oxide</span>
+        <div class="btn-group">
+            <button class="btn btn-primary btn-sm" id="install-oxide">
+                <i class="bi bi-download"></i> Установить Oxide
+            </button>
+            <button class="btn btn-outline-primary btn-sm" id="search-plugins">
+                <i class="bi bi-search"></i> Поиск плагинов
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-collection"></i> Установленные плагины
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Тип</th>
+                                        <th>Статус</th>
+                                        <th>Размер</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="plugins-list">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">
+                                            <div class="spinner-border spinner-border-sm"></div>
+                                            <span class="ms-2">Загрузка плагинов...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-upload"></i> Установка плагина
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">URL плагина:</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="plugin-url" 
+                                           placeholder="https://umod.org/plugins/economics">
+                                    <button class="btn btn-outline-primary" id="install-from-url">
+                                        <i class="bi bi-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Загрузить файл:</label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="plugin-file" 
+                                           accept=".dll,.cs,.zip">
+                                    <button class="btn btn-outline-primary" id="install-from-file">
+                                        <i class="bi bi-upload"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted">Поддерживаются: .dll, .cs, .zip</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-info-circle"></i> Информация о Oxide
+                    </div>
+                    <div class="card-body">
+                        <div id="oxide-info">
+                            <div class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm"></div>
+                                <span class="ms-2">Загрузка информации...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-stars"></i> Популярные плагины
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush" id="popular-plugins">
+                            <div class="list-group-item bg-transparent border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <span>Economics</span>
+                                    <span class="badge bg-primary">💰</span>
+                                </div>
+                                <small class="text-muted">Экономическая система</small>
+                            </div>
+                            <div class="list-group-item bg-transparent border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <span>MagicPanel</span>
+                                    <span class="badge bg-primary">🎮</span>
+                                </div>
+                                <small class="text-muted">Информационная панель</small>
+                            </div>
+                            <div class="list-group-item bg-transparent border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <span>NTeleportation</span>
+                                    <span class="badge bg-primary">⚡</span>
+                                </div>
+                                <small class="text-muted">Телепортация</small>
+                            </div>
+                            <div class="list-group-item bg-transparent border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <span>Kits</span>
+                                    <span class="badge bg-primary">🎁</span>
+                                </div>
+                                <small class="text-muted">Система наборов</small>
+                            </div>
+                            <div class="list-group-item bg-transparent border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <span>Backpacks</span>
+                                    <span class="badge bg-primary">🎒</span>
+                                </div>
+                                <small class="text-muted">Система рюкзаков</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm w-100 mt-2" id="view-more-plugins">
+                            <i class="bi bi-arrow-right"></i> Показать больше
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно поиска плагинов -->
+<div class="modal fade" id="searchModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Поиск плагинов на uMod</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="plugin-search" 
+                               placeholder="Введите название плагина...">
+                        <button class="btn btn-primary" id="do-search">
+                            <i class="bi bi-search"></i> Поиск
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive" style="max-height: 400px;">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Автор</th>
+                                <th>Загрузки</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search-results">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <i class="bi bi-search display-6 text-muted"></i>
+                                    <p class="mt-3">Введите запрос для поиска плагинов</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
